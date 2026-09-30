@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GameKoin BD</title>
+<style>
+:root{--bg:#0a1424;--card:#111f36;--line:#1f3355;--txt:#e8eefc;--dim:#8fa3c7;--blue:#3d8bff;--violet:#8b5cf6;--gold:#f5b942;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif;padding:12px;max-width:480px;margin:auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.hero{background:linear-gradient(135deg,#14224a,#2a1a5e);border-color:#4b3aa8}
+.hero h1{margin:0;font-size:28px;font-weight:800}
+.hero h1 b{color:#a78bfa}
+.hero p{margin:6px 0 0;color:var(--dim);font-size:14px}
+.bal{display:flex;align-items:center;gap:14px}
+.ico{width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--violet));display:grid;place-items:center;font-size:26px}
+.bal small{color:var(--dim)}
+.bal strong{display:block;font-size:28px;color:var(--blue)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button,.btn{font:inherit;color:var(--txt);background:#172a4a;border:1px solid var(--line);border-radius:12px;padding:14px 8px;cursor:pointer}
+button:active{background:#1f3a66}
+button:focus-visible{outline:2px solid var(--blue)}
+.wide{grid-column:span 2}
+.primary{background:var(--blue);border-color:var(--blue);font-weight:700;width:100%}
+h2{margin:0 0 6px;font-size:17px;color:var(--blue)}
+.bar{height:10px;background:#0d1a30;border-radius:9px;overflow:hidden;margin:10px 0 6px}
+.bar i{display:block;height:100%;width:1%;background:var(--blue)}
+.row{display:flex;justify-content:space-between;color:var(--dim);font-size:13px}
+.num{display:flex;justify-content:space-between;align-items:center;background:#0d1a30;border:1px dashed var(--gold);border-radius:12px;padding:12px;margin:10px 0}
+.num span{font-size:20px;font-weight:700;color:var(--gold);letter-spacing:1px}
+.num button{padding:8px 12px}
+label{display:block;font-size:13px;color:var(--dim);margin:10px 0 4px}
+input{width:100%;font:inherit;color:var(--txt);background:#0d1a30;border:1px solid var(--line);border-radius:10px;padding:12px}
+input:focus-visible{outline:2px solid var(--blue)}
+#msg{margin-top:10px;font-size:14px;min-height:20px}
+.hide{display:none}
+</style>
+</head>
+<body>
+
+<div class="card hero">
+  <h1>GameKoin <b>BD</b></h1>
+  <p>এড দেখো, কয়েন আয় করো, গেম আইটেম রিডিম করো</p>
+</div>
+
+<div class="card bal">
+  <div class="ico">🪙</div>
+  <div><small>তোমার ব্যালেন্স</small><strong id="bal">0 Coins</strong></div>
+</div>
+
+<div class="card">
+  <div class="grid">
+    <button data-game="ff">🎮 Free Fire কিনুন</button>
+    <button data-game="pubg">🎮 PUBG UC কিনুন</button>
+    <button>💰 Earn Coins</button>
+    <button id="openBuy">💳 Buy Coins</button>
+    <button id="openWd">💸 Withdraw</button>
+    <button>📜 History</button>
+    <button id="openRef" class="wide">👥 Refer করো, বোনাস পাও</button>
+    <button class="wide">ℹ️ How it works</button>
+  </div>
+</div>
+
+<div class="card">
+  <h2>এড দেখে কয়েন আয় করো!</h2>
+  <p style="margin:0 0 10px;color:var(--dim);font-size:14px">ছোট এড দেখো, কয়েন জমাও।</p>
+  <button class="primary">▶ Watch Ad</button>
+</div>
+
+<div class="card">
+  <h2>Withdraw Progress</h2>
+  <div style="font-size:14px">মিনিমাম 750,000 কয়েন লাগবে</div>
+  <div class="bar"><i id="fill"></i></div>
+  <div class="row"><span id="prog">0 / 750,000</span><span id="pct">0%</span></div>
+</div>
+
+<div class="card hide" id="wd">
+  <h2>Withdraw — কয়েন দিয়ে নাও</h2>
+  <div id="wdMenu" class="grid">
+    <button data-w="ff">🎮 Free Fire Diamond</button>
+    <button data-w="pubg">🎮 PUBG UC</button>
+    <button data-w="bkash">📱 বিকাশ ক্যাশ</button>
+    <button data-w="nagad">📱 নগদ ক্যাশ</button>
+  </div>
+  <div id="wdList" class="grid hide" style="margin-top:10px"></div>
+  <div id="wdForm" class="hide">
+    <div style="margin-top:12px;font-size:15px">নির্বাচিত: <b id="wSel"></b></div>
+    <div id="wCash" class="hide">
+      <label for="wcoins">কয়েন (মিনিমাম 50,000)</label>
+      <input id="wcoins" type="number" inputmode="numeric" placeholder="50000">
+    </div>
+    <label for="wid" id="wLab">ID</label>
+    <input id="wid" inputmode="numeric">
+    <div style="height:12px"></div>
+    <button class="primary" id="wSend">Withdraw করো</button>
+    <div id="wMsg" style="margin-top:10px;font-size:14px"></div>
+  </div>
+  <button id="wBack" class="hide" style="margin-top:10px;width:100%">⬅ Back</button>
+</div>
+
+<div class="card hide" id="shop">
+  <h2 id="shopTitle">প্যাকেজ বেছে নাও</h2>
+  <div id="pk" class="grid"></div>
+  <div id="pay" class="hide">
+    <div style="margin-top:12px;font-size:15px">নির্বাচিত: <b id="sel"></b></div>
+    <div style="font-size:14px;color:var(--dim);margin-top:8px">১. এই নাম্বারে Send Money করো</div>
+    <div class="num"><span class="bkn">01815966476</span></div>
+    <label for="uid">Game UID / Player ID</label>
+    <input id="uid" inputmode="numeric" placeholder="তোমার গেম আইডি">
+    <label for="trx2">bKash TrxID</label>
+    <input id="trx2" placeholder="যেমন 9A7B2C3D4E" autocapitalize="characters">
+    <div style="height:12px"></div>
+    <button class="primary" id="send2">Submit</button>
+    <div id="msg2" style="margin-top:10px;font-size:14px"></div>
+  </div>
+</div>
+
+<div class="card hide" id="ref">
+  <h2>বন্ধুদের Refer করো</h2>
+  <div style="font-size:14px;color:var(--dim)">তোমার লিংকে বন্ধু জয়েন করলে বাড়তি কয়েন বোনাস পাবে।</div>
+  <div class="num"><span id="rl" style="font-size:13px;word-break:break-all;letter-spacing:0">লিংক</span></div>
+  <div class="grid"><button id="cpr">Copy Link</button><button id="shr">Share</button></div>
+</div>
+
+<div class="card hide" id="buy">
+  <h2>Buy Coins (বিকাশ)</h2>
+  <div style="font-size:14px;color:var(--dim)">১. নিচের নাম্বারে Send Money করো</div>
+  <div class="num"><span id="bk">01815966476</span><button id="copy">Copy</button></div>
+  <div style="font-size:14px;color:var(--dim)">২. টাকার পরিমাণ ও TrxID দাও</div>
+  <label for="amt">টাকা (৳)</label>
+  <input id="amt" type="number" inputmode="numeric" min="10" placeholder="যেমন 50">
+  <div id="get" style="font-size:13px;color:var(--gold);margin-top:6px"></div>
+  <label for="trx">bKash TrxID</label>
+  <input id="trx" placeholder="যেমন 9A7B2C3D4E" autocapitalize="characters">
+  <div style="height:12px"></div>
+  <button class="primary" id="send">Submit</button>
+  <div id="msg"></div>
+</div>
+
+<script>
+var COINS_PER_TAKA = 1000;
+var tg = window.Telegram && window.Telegram.WebApp;
+if (tg) { tg.ready(); tg.expand(); }
+
+var balance = 0, MIN = 750000;
+function render(){
+  document.getElementById('bal').textContent = balance.toLocaleString() + ' Coins';
+  var p = Math.min(100, balance / MIN * 100);
+  document.getElementById('fill').style.width = Math.max(1, p) + '%';
+  document.getElementById('prog').textContent = balance.toLocaleString() + ' / ' + MIN.toLocaleString();
+  document.getElementById('pct').textContent = p.toFixed(2) + '%';
+}
+render();
+
+document.getElementById('openBuy').onclick = function(){
+  var b = document.getElementById('buy');
+  b.classList.toggle('hide');
+  if (!b.classList.contains('hide')) b.scrollIntoView({behavior:'smooth'});
+};
+document.getElementById('copy').onclick = function(){
+  try { navigator.clipboard.writeText(document.getElementById('bk').textContent); this.textContent = 'Copied'; } catch(e){}
+};
+document.getElementById('amt').oninput = function(){
+  var t = parseInt(this.value, 10);
+  document.getElementById('get').textContent = t > 0 ? 'পাবে: ' + (t * COINS_PER_TAKA).toLocaleString() + ' কয়েন' : '';
+};
+document.getElementById('send').onclick = function(){
+  var amt = parseInt(document.getElementById('amt').value, 10);
+  var trx = document.getElementById('trx').value.trim();
+  var msg = document.getElementById('msg');
+  if (!(amt > 0) || trx.length < 6) { msg.textContent = 'টাকার পরিমাণ ও সঠিক TrxID দাও।'; msg.style.color = '#ff8a8a'; return; }
+  if (tg) { tg.sendData(JSON.stringify({type:'buy', amount:amt, trx:trx})); }
+  msg.textContent = 'জমা হয়েছে। অ্যাডমিন চেক করে কয়েন যোগ করবে।'; msg.style.color = '#7ee0a0';
+};
+
+var PK={
+ ff:{t:"Free Fire Diamond",l:[[25,22],[50,37],[115,80],[240,158],[355,237],[505,336],[610,400],[850,558]],u:" Diamond"},
+ pubg:{t:"PUBG Mobile UC",l:[[60,132],[180,372],[325,627],[660,1232],[720,1352],[985,1842]],u:" UC"}
+};
+var BK="01815966476", cur=null, chosen=null;
+document.querySelectorAll('.bkn,#bk').forEach(function(e){e.textContent=BK});
+function show(id){['shop','ref','buy','wd'].forEach(function(x){document.getElementById(x).classList.toggle('hide',x!==id)});document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+document.querySelectorAll('[data-game]').forEach(function(b){b.onclick=function(){
+  cur=b.dataset.game; var g=PK[cur]; chosen=null;
+  document.getElementById('shopTitle').textContent=g.t;
+  document.getElementById('pay').classList.add('hide');
+  var box=document.getElementById('pk'); box.innerHTML='';
+  g.l.forEach(function(p){var x=document.createElement('button');x.textContent=p[0]+g.u+' (৳'+p[1]+')';x.onclick=function(){chosen=p;document.getElementById('sel').textContent=p[0]+g.u+' — ৳'+p[1];document.getElementById('pay').classList.remove('hide');document.getElementById('pay').scrollIntoView({behavior:'smooth'})};box.appendChild(x)});
+  show('shop');
+}});
+document.getElementById('send2').onclick=function(){
+  var uid=document.getElementById('uid').value.trim(),trx=document.getElementById('trx2').value.trim(),m=document.getElementById('msg2');
+  if(!chosen||uid.length<5||trx.length<6){m.textContent='গেম আইডি ও সঠিক TrxID দাও।';m.style.color='#ff8a8a';return}
+  if(tg){tg.sendData(JSON.stringify({type:'order',game:cur,item:chosen[0],price:chosen[1],uid:uid,trx:trx}))}
+  m.textContent='অর্ডার জমা হয়েছে। অ্যাডমিন পেমেন্ট চেক করে পাঠিয়ে দেবে।';m.style.color='#7ee0a0';
+};
+var uidTg=(tg&&tg.initDataUnsafe&&tg.initDataUnsafe.user)?tg.initDataUnsafe.user.id:'YOURID';
+var RL='https://t.me/GameKoinBD_bot?start=ref_'+uidTg;
+document.getElementById('rl').textContent=RL;
+document.getElementById('openRef').onclick=function(){show('ref')};
+document.getElementById('cpr').onclick=function(){try{navigator.clipboard.writeText(RL);this.textContent='Copied'}catch(e){}};
+document.getElementById('shr').onclick=function(){var u='https://t.me/share/url?url='+encodeURIComponent(RL)+'&text='+encodeURIComponent('GameKoin BD-তে এড দেখে কয়েন আয় করো!');if(tg){tg.openTelegramLink(u)}else{window.open(u)}};
+document.getElementById('openBuy').onclick=function(){show('buy')};
+
+var W=null, wItem=null;
+function wReset(){['wdList','wdForm','wBack'].forEach(function(x){document.getElementById(x).classList.add('hide')});document.getElementById('wdMenu').classList.remove('hide')}
+document.getElementById('openWd').onclick=function(){wReset();show('wd')};
+document.getElementById('wBack').onclick=wReset;
+function wOpenForm(label,sel,cash){wItem=sel;document.getElementById('wSel').textContent=sel;document.getElementById('wLab').textContent=label;document.getElementById('wCash').classList.toggle('hide',!cash);document.getElementById('wdForm').classList.remove('hide');document.getElementById('wdForm').scrollIntoView({behavior:'smooth'})}
+document.querySelectorAll('[data-w]').forEach(function(b){b.onclick=function(){
+  W=b.dataset.w;
+  document.getElementById('wdMenu').classList.add('hide');
+  document.getElementById('wBack').classList.remove('hide');
+  document.getElementById('wdForm').classList.add('hide');
+  var L=document.getElementById('wdList');L.innerHTML='';
+  if(W==='ff'||W==='pubg'){
+    var g=PK[W];L.classList.remove('hide');
+    g.l.forEach(function(p){var x=document.createElement('button');x.textContent=p[0]+g.u+' ('+(p[1]*COINS_PER_TAKA).toLocaleString()+' কয়েন)';x.onclick=function(){wItem=p;wOpenForm(W==='ff'?'Free Fire UID':'PUBG Player ID',p[0]+g.u+' — '+(p[1]*COINS_PER_TAKA).toLocaleString()+' কয়েন',false)};L.appendChild(x)});
+  }else{
+    L.classList.add('hide');wOpenForm(W==='bkash'?'বিকাশ নাম্বার':'নগদ নাম্বার',W==='bkash'?'বিকাশ ক্যাশ':'নগদ ক্যাশ',true);
+  }
+}});
+document.getElementById('wSend').onclick=function(){
+  var id=document.getElementById('wid').value.trim(),m=document.getElementById('wMsg'),d={type:'withdraw',method:W,id:id};
+  if(id.length<5){m.textContent='সঠিক আইডি/নাম্বার দাও।';m.style.color='#ff8a8a';return}
+  if(W==='bkash'||W==='nagad'){var c=parseInt(document.getElementById('wcoins').value,10);if(!(c>=50000)){m.textContent='মিনিমাম 50,000 কয়েন লাগবে।';m.style.color='#ff8a8a';return}d.coins=c}
+  else{d.item=wItem[0];d.coins=wItem[1]*COINS_PER_TAKA}
+  if(tg){tg.sendData(JSON.stringify(d))}
+  m.textContent='রিকোয়েস্ট জমা হয়েছে। ৪৮-৭২ ঘণ্টার মধ্যে প্রসেস হবে।';m.style.color='#7ee0a0';
+};
+</script>
+</body>
+</html>
